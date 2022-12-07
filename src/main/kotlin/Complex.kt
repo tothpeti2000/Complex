@@ -1,12 +1,13 @@
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 data class Complex(val re: Double, val im: Double) {
     constructor(re: Number = 0, im: Number = 0) : this(re.toDouble(), im.toDouble())
 
     override fun toString(): String {
         return when {
+            re == 0.0 && im == 0.0 -> 0.0.toString()
+            re == 0.0 -> "${im}i"
+            im == 0.0 -> re.toString()
             im >= 0 -> "$re + ${im}i"
             else -> "$re - ${abs(im)}i"
         }
@@ -18,6 +19,20 @@ val Complex.conjugate: Complex
 
 val Complex.r: Double
     get() = sqrt(re * re + im * im)
+
+val Complex.quadrant: Quadrant
+    get() {
+        return when {
+            re > 0 && im > 0 -> Quadrant.First
+            re < 0 && im > 0 -> Quadrant.Second
+            re < 0 && im < 0 -> Quadrant.Third
+            re > 0 && im < 0 -> Quadrant.Fourth
+            else -> Quadrant.ON_AXIS
+        }
+    }
+
+val Complex.theta: Double
+    get() = atan2(im, re)
 
 operator fun Complex.unaryMinus() = Complex(-re, -im)
 
@@ -41,8 +56,19 @@ operator fun Complex.div(num: Number): Complex {
 
 fun Number.toComplex() = Complex(this)
 operator fun Number.plus(c: Complex) = c + this
-operator fun Number.minus(c: Complex) = c - this
+operator fun Number.minus(c: Complex) = -c + this
 operator fun Number.times(c: Complex) = c * this
 operator fun Number.div(c: Complex) = this.toComplex() / c
 
+fun Complex.pow(n: Int): Complex = r.pow(n) * (cos(n * theta) + sin(n * theta) * i)
+fun Complex.root(n: Int): Complex {
+    require(n > 0) { "The root value must be positive" }
+    return r.pow(1.0 / n) * (cos(theta / n) + sin(theta / n) * i)
+}
+
+fun Complex.toTrigonometricForm() = "$r (cos($theta) + sin($theta)i)"
+fun Complex.toExponentialForm() = "$r e^${theta}i"
+
 val i: Complex by lazy { Complex(0.0, 1.0) }
+
+fun exp(c: Complex): Complex = exp(c.re) * (cos(c.im) + sin(c.im) * i)
