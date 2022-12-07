@@ -1,4 +1,5 @@
 import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 data class Complex(val re: Double, val im: Double) {
@@ -29,16 +30,19 @@ operator fun Complex.minus(num: Number) = Complex(re - num.toDouble(), im)
 operator fun Complex.times(other: Complex) = Complex(re * other.re - im * other.im, re * other.im + im * other.re)
 operator fun Complex.times(num: Number) = Complex(num.toDouble() * re, num.toDouble() * im)
 
-operator fun Complex.div(other: Complex) = (this * other.conjugate) / (other.r * other.r)
-operator fun Complex.div(num: Number) = Complex(re / num.toDouble(), im / num.toDouble())
+operator fun Complex.div(other: Complex): Complex {
+    require(other.r > 0) { "The absolute value of the divisor complex number must not be 0" }
+    return (this * other.conjugate) / other.r.pow(2)
+}
+operator fun Complex.div(num: Number): Complex {
+    require(num != 0) { "You can't divide a complex number by 0" }
+    return Complex(re / num.toDouble(), im / num.toDouble())
+}
 
-
-fun Number.toComplex(): Complex = Complex(this)
+fun Number.toComplex() = Complex(this)
 operator fun Number.plus(c: Complex) = c + this
 operator fun Number.minus(c: Complex) = c - this
 operator fun Number.times(c: Complex) = c * this
 operator fun Number.div(c: Complex) = this.toComplex() / c
 
-val zero: Complex = 0.0.toComplex()
-val one: Complex = 1.0.toComplex()
 val i: Complex by lazy { Complex(0.0, 1.0) }
