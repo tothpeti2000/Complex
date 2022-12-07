@@ -1,13 +1,13 @@
 import kotlin.math.*
 
 data class Complex(val re: Double, val im: Double) {
-    constructor(re: Number = 0, im: Number = 0) : this(re.toDouble(), im.toDouble())
+    constructor(re: Number = 0.0, im: Number = 0.0) : this(re.toDouble(), im.toDouble())
 
     override fun toString(): String {
         return when {
-            re == 0.0 && im == 0.0 -> 0.0.toString()
-            re == 0.0 -> "${im}i"
-            im == 0.0 -> re.toString()
+            re.nearlyEquals(0.0) && im.nearlyEquals(0.0) -> 0.0.toString()
+            re.nearlyEquals(0.0) -> "${im}i"
+            im.nearlyEquals(0.0) -> re.toString()
             im >= 0 -> "$re + ${im}i"
             else -> "$re - ${abs(im)}i"
         }
@@ -21,14 +21,12 @@ val Complex.r: Double
     get() = sqrt(re * re + im * im)
 
 val Complex.quadrant: Quadrant
-    get() {
-        return when {
-            re > 0 && im > 0 -> Quadrant.First
-            re < 0 && im > 0 -> Quadrant.Second
-            re < 0 && im < 0 -> Quadrant.Third
-            re > 0 && im < 0 -> Quadrant.Fourth
-            else -> Quadrant.ON_AXIS
-        }
+    get() = when {
+        re > 0 && im > 0 -> Quadrant.First
+        re < 0 && im > 0 -> Quadrant.Second
+        re < 0 && im < 0 -> Quadrant.Third
+        re > 0 && im < 0 -> Quadrant.Fourth
+        else -> Quadrant.ON_AXIS
     }
 
 val Complex.theta: Double
