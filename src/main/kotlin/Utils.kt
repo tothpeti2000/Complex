@@ -1,4 +1,14 @@
-import kotlin.math.abs
+import java.text.DecimalFormat
 
-private const val DOUBLE_PRECISION = 1e-15
-fun Double.nearlyEquals(other: Double) = abs(this - other) < DOUBLE_PRECISION
+fun Double.toPrettyString(maxFractionDigits: Int = 4): String {
+    require(maxFractionDigits >= 0) { "The number of fraction digits must not be negative" }
+
+    val pattern = when(maxFractionDigits) {
+        0 -> "#"
+        else -> "#.${"#".repeat(maxFractionDigits)}"
+    }
+
+    val formatter = DecimalFormat(pattern)
+
+    return formatter.format(this)
+}
