@@ -204,4 +204,32 @@ class ComplexTest {
         z1.forEach { assertComplexEquals(1.08421508149135 + 0.29051455550725 * i, cbrt()) }
         z1.forEach { assertComplexEquals(1.06955393236398 + 0.21274750472674 * i, root(4)) }
     }
+
+    @Test
+    fun `test forms with invalid fraction digit numbers`() {
+        z1.forEach { assertThrows(java.lang.IllegalArgumentException::class.java) { toAlgebraicForm(-1) } }
+        z1.forEach { assertThrows(java.lang.IllegalArgumentException::class.java) { toTrigonometricForm(-1) } }
+        z1.forEach { assertThrows(java.lang.IllegalArgumentException::class.java) { toExponentialForm(-1) } }
+    }
+
+    @Test
+    fun `test algebraic form`() {
+        z1.forEach { assertEquals("1.0987 + 0.4551i", sqrt().toAlgebraicForm()) }
+        z2.forEach { assertEquals("1.0987 - 0.4551i", sqrt().toAlgebraicForm()) }
+
+        z1.forEach { assertEquals("1.098684 + 0.45509i", sqrt().toAlgebraicForm(6)) }
+        z2.forEach { assertEquals("1.098684 - 0.45509i", sqrt().toAlgebraicForm(6)) }
+    }
+
+    @Test
+    fun `test trigonometric form`() {
+        z1.forEach { assertEquals("1.1892 (cos(0.3927) + sin(0.3927)i)", sqrt().toTrigonometricForm()) }
+        z1.forEach { assertEquals("1.189207 (cos(0.392699) + sin(0.392699)i)", sqrt().toTrigonometricForm(6)) }
+    }
+
+    @Test
+    fun `test exponential form`() {
+        z1.forEach { assertEquals("1.1892 e^0.3927i", sqrt().toExponentialForm()) }
+        z1.forEach { assertEquals("1.189207 e^0.392699i", sqrt().toExponentialForm(6)) }
+    }
 }
