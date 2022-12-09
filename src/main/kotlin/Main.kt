@@ -6,5 +6,5 @@ fun main() {
     val (re, im) = 1 + (2 + 3 * i)
     val zero = (1.123456789e-14 + 1.123456789e-14 * i)
 
-    println(z1.pow(0))
+    println(Complex().conjugate)
 }
